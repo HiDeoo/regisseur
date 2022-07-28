@@ -1,7 +1,7 @@
 function run() {
-  console.log("plop2");
+  console.log('plop2')
 }
 
-run();
+run()
 
-export {};
+export {}

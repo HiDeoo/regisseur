@@ -1,0 +1,21 @@
+{
+  "name": "regisseur",
+  "version": "0.0.1",
+  "bin": "./cli.mjs",
+  "scripts": {
+    "dev": "unbuild --stub",
+    "build": "unbuild",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "pnpm run build"
+  },
+  "devDependencies": {
+    "@hideoo/tsconfig": "0.0.1",
+    "typescript": "4.7.4",
+    "unbuild": "0.7.6"
+  },
+  "packageManager": "pnpm@7.5.0",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

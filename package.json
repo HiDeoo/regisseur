@@ -9,10 +9,14 @@
     "prepare": "husky install",
     "prepublishOnly": "pnpm run build"
   },
+  "dependencies": {
+    "cac": "6.7.12"
+  },
   "devDependencies": {
     "@hideoo/eslint-config": "0.3.0",
     "@hideoo/prettier-config": "0.1.0",
-    "@hideoo/tsconfig": "0.0.1",
+    "@hideoo/tsconfig": "0.1.0",
+    "@types/node": "16.11.46",
     "eslint": "8.20.0",
     "husky": "8.0.1",
     "lint-staged": "13.0.3",

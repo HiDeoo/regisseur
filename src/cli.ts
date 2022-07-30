@@ -1,5 +1,6 @@
 import cac from 'cac'
 import { red } from 'kolorist'
+import { ZodError } from 'zod'
 
 import { runAction, listAction } from './actions'
 
@@ -22,7 +23,11 @@ async function run() {
     console.error(red(`${isError ? error.message : error}`))
 
     if (isError && error.cause) {
-      console.error(error.cause)
+      if (error.cause instanceof ZodError) {
+        console.error('Validation error:', error.cause.format())
+      } else {
+        console.error(error.cause)
+      }
     }
 
     process.exit(1)

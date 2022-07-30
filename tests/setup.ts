@@ -5,15 +5,22 @@ import { type Act } from '../src/libs/act'
 
 expect.extend({
   toMatchAct(received: Act, expected: ActMatcherOptions) {
+    let pass: boolean =
+      this.equals(`${expected.fileName}.${ACT_EXTENSION}`, received.fileName) &&
+      this.equals(expect.stringMatching(new RegExp(`${expected.fileName}\\.${ACT_EXTENSION}$`)), received.path) &&
+      this.equals(expect.anything(), received.content)
+
+    if (expected.name && pass) {
+      pass = this.equals(received.name, expected.name)
+    }
+
     return {
       message: () =>
-        `expected ${this.utils.stringify(received)} to${this.isNot ? ' not' : ''} match ${this.utils.stringify(
-          expected
-        )}`,
-      pass: this.equals(received, {
-        fileName: `${expected.fileName}.${ACT_EXTENSION}`,
-        path: expect.stringMatching(new RegExp(`${expected.fileName}\\.${ACT_EXTENSION}$`)),
-      }),
+        `Expected act to ${this.isNot ? ' not' : ''}match:
+  ${this.utils.printExpected(expected)}
+Received:
+  ${this.utils.printReceived(received)}`,
+      pass,
     }
   },
 })
@@ -31,4 +38,5 @@ interface CustomMatchers<R = unknown> {
 
 interface ActMatcherOptions {
   fileName: string
+  name?: string
 }

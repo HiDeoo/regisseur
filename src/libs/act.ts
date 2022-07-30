@@ -5,6 +5,8 @@ import glob from 'tiny-glob'
 
 import { ACTS_DIRECTORY, ACT_EXTENSION } from '../constants/act'
 
+import { getContent, type NameAndContent } from './content'
+
 export async function findAllActs(): Promise<Acts> {
   await ensureActDirectory()
 
@@ -12,15 +14,17 @@ export async function findAllActs(): Promise<Acts> {
 
   const acts: Acts = { all: [] }
 
-  acts.all = actPaths.map((actPath) => {
-    const act = getActFromPath(actPath)
+  acts.all = await Promise.all(
+    actPaths.map(async (actPath) => {
+      const act = await getActFromPath(actPath)
 
-    if (path.basename(actPath) === `default.${ACT_EXTENSION}`) {
-      acts.def = act
-    }
+      if (path.basename(actPath) === `default.${ACT_EXTENSION}`) {
+        acts.def = act
+      }
 
-    return act
-  })
+      return act
+    })
+  )
 
   if (!acts.def && acts.all.length === 1 && acts.all[0]) {
     acts.def = acts.all[0]
@@ -41,9 +45,9 @@ export async function findAct(pathOrFileNameOrName: string | undefined) {
    *    the same act name.
    */
 
-  if (!pathOrFileNameOrName) {
-    const acts = await findAllActs()
+  const acts = await findAllActs()
 
+  if (!pathOrFileNameOrName) {
     if (!acts.def) {
       throw new Error(
         `No default act found in the '${ACTS_DIRECTORY}' directory. It should be a 'default.${ACT_EXTENSION}' file.`
@@ -53,13 +57,15 @@ export async function findAct(pathOrFileNameOrName: string | undefined) {
     return acts.def
   }
 
-  const actPathExists = await actFileExists(pathOrFileNameOrName)
+  const actPath = await actFileExists(pathOrFileNameOrName)
 
-  if (actPathExists) {
-    return getActFromPath(pathOrFileNameOrName)
+  if (actPath) {
+    const actMatchingPath = acts.all.find((act) => act.path === actPath)
+
+    if (actMatchingPath) {
+      return actMatchingPath
+    }
   }
-
-  const acts = await findAllActs()
 
   const actMatchingFileName = acts.all.find(
     (act) => act.fileName === pathOrFileNameOrName || act.fileName === `${pathOrFileNameOrName}.${ACT_EXTENSION}`
@@ -69,20 +75,22 @@ export async function findAct(pathOrFileNameOrName: string | undefined) {
     return actMatchingFileName
   }
 
-  // TODO(HiDeoo)
-  // const actMatchingName = acts.all.find((act) => act.name === pathOrFileNameOrName)
+  const actMatchingName = acts.all.find((act) => act.name === pathOrFileNameOrName)
 
-  // if (actMatchingName) {
-  //   return actMatchingName
-  // }
+  if (actMatchingName) {
+    return actMatchingName
+  }
 
   throw new Error('Could not find an act matching the given path, file name or name.')
 }
 
-function getActFromPath(actPath: string): Act {
+async function getActFromPath(actPath: string): Promise<Act> {
+  const content = await getContent(actPath)
+
   return {
+    ...content,
     fileName: path.basename(actPath),
-    path: actPath,
+    path: path.resolve(actPath),
   }
 }
 
@@ -90,7 +98,7 @@ async function actFileExists(actPath: string) {
   try {
     await fs.access(actPath)
 
-    return true
+    return path.resolve(actPath)
   } catch {
     return false
   }
@@ -111,7 +119,7 @@ interface Acts {
   def?: Act // Default but aliased to avoid the reserved keyword.
 }
 
-export interface Act {
+export type Act = {
   fileName: string
   path: string
-}
+} & NameAndContent

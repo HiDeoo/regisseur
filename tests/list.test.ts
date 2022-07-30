@@ -33,9 +33,9 @@ describe('findAllActs', () => {
       const { all } = await findAllActs()
 
       expect(all).toHaveLength(3)
-      expect(all[0]).toMatchAct({ fileName: 'default' })
+      expect(all[0]).toMatchAct({ fileName: 'default', name: 'Default Name' })
       expect(all[1]).toMatchAct({ fileName: 'test1' })
-      expect(all[2]).toMatchAct({ fileName: 'test2' })
+      expect(all[2]).toMatchAct({ fileName: 'test2', name: 'Test 2 Name' })
     }))
 
   test('should identify the default single act', async () =>

@@ -4,10 +4,12 @@ specifiers:
   '@hideoo/eslint-config': 0.4.0
   '@hideoo/prettier-config': 0.1.0
   '@hideoo/tsconfig': 0.1.0
+  '@types/hjson': 2.4.3
   '@types/node': 16.11.46
   c8: 7.12.0
   cac: 6.7.12
   eslint: 8.20.0
+  hjson: 3.2.2
   husky: 8.0.1
   kolorist: 1.5.1
   lint-staged: 13.0.3
@@ -16,9 +18,11 @@ specifiers:
   typescript: 4.7.4
   unbuild: 0.7.6
   vitest: 0.19.1
+  zod: 3.17.10
 
 dependencies:
   cac: 6.7.12
+  hjson: 3.2.2
   kolorist: 1.5.1
   tiny-glob: 0.2.9
 
@@ -26,6 +30,7 @@ devDependencies:
   '@hideoo/eslint-config': 0.4.0_he2ccbldppg44uulnyq4rwocfa
   '@hideoo/prettier-config': 0.1.0
   '@hideoo/tsconfig': 0.1.0
+  '@types/hjson': 2.4.3
   '@types/node': 16.11.46
   c8: 7.12.0
   eslint: 8.20.0
@@ -35,6 +40,7 @@ devDependencies:
   typescript: 4.7.4
   unbuild: 0.7.6
   vitest: 0.19.1_c8@7.12.0
+  zod: 3.17.10
 
 packages:
 
@@ -532,6 +538,10 @@ packages:
 
   /@types/estree/1.0.0:
     resolution: {integrity: sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==}
+    dev: true
+
+  /@types/hjson/2.4.3:
+    resolution: {integrity: sha512-EDixutNn3FQwa5HdET+Tx0h7TirP2knJa9TB21ySqr8XVqT/VsvvOwnanTLHUOOpNofcUhkRKhOk0Wh4YD9RSA==}
     dev: true
 
   /@types/istanbul-lib-coverage/2.0.4:
@@ -2028,6 +2038,11 @@ packages:
     dependencies:
       function-bind: 1.1.1
     dev: true
+
+  /hjson/3.2.2:
+    resolution: {integrity: sha512-MkUeB0cTIlppeSsndgESkfFD21T2nXPRaBStLtf3cAYA2bVEFdXlodZB0TukwZiobPD1Ksax5DK4RTZeaXCI3Q==}
+    hasBin: true
+    dev: false
 
   /hookable/5.1.1:
     resolution: {integrity: sha512-7qam9XBFb+DijNBthaL1k/7lHU2TEMZkWSyuqmU3sCQze1wFm5w9AlEx30PD7a+QVAjOy6Ec2goFwe1YVyk2uA==}
@@ -3658,4 +3673,8 @@ packages:
   /yocto-queue/0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+    dev: true
+
+  /zod/3.17.10:
+    resolution: {integrity: sha512-IHXnQYQuOOOL/XgHhgl8YjNxBHi3xX0mVcHmqsvJgcxKkEczPshoWdxqyFwsARpf41E0v9U95WUROqsHHxt0UQ==}
     dev: true

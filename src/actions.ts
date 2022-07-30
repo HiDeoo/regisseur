@@ -1,3 +1,5 @@
+import path from 'node:path'
+
 import { bold, cyan, dim, red } from 'kolorist'
 
 import { ACTS_DIRECTORY } from './constants/act'
@@ -24,7 +26,12 @@ export async function listAction() {
 
   for (const act of acts.all) {
     const isDefaultAct = act.path === acts.def?.path
+    const actPath = path.basename(act.path)
 
-    console.log(`  ${isDefaultAct ? bold('*') : dim('-')} ${isDefaultAct ? bold(act.path) : act.path}`)
+    console.log(
+      `  ${isDefaultAct ? bold('*') : dim('-')} ${isDefaultAct ? bold(actPath) : actPath}${
+        act.name ? dim(` (name: ${act.name})`) : ''
+      }`
+    )
   }
 }

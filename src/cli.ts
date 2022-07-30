@@ -1,36 +1,17 @@
 import cac from 'cac'
-import { bold, cyan, dim, red } from 'kolorist'
+import { red } from 'kolorist'
 
-import { ACTS_DIRECTORY } from './constants/act'
-import { pluralize } from './libs/string'
-
-import { findAllActs } from '.'
+import { listAction } from './actions'
 
 const cli = cac('regisseur')
 
 cli.help()
 
-cli.command('[file]', '// TODO').action(() => {
-  console.log('no command')
+cli.command('[file]', '// TODO').action((file) => {
+  console.log('🚨 [cli.ts:14] file', file)
 })
 
-cli.command('list', '// TODO').action(async () => {
-  const acts = await findAllActs()
-
-  if (acts.all.length === 0) {
-    console.log(red(`No acts found in the '${ACTS_DIRECTORY}' directory.`))
-
-    return
-  }
-
-  console.log(cyan(`Found ${acts.all.length} ${pluralize(acts.all.length, 'act')}:`))
-
-  for (const act of acts.all) {
-    const isDefaultAct = act.path === acts.def?.path
-
-    console.log(`  ${isDefaultAct ? bold('*') : dim('-')} ${isDefaultAct ? bold(act.path) : act.path}`)
-  }
-})
+cli.command('list', '// TODO').action(listAction)
 
 async function run() {
   try {

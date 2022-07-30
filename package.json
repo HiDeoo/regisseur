@@ -7,6 +7,7 @@
     "dev": "unbuild --stub",
     "build": "unbuild",
     "test": "vitest",
+    "test:coverage": "vitest run --coverage && open coverage/index.html",
     "lint": "prettier -c . && eslint . --max-warnings=0 && tsc --noEmit",
     "prepare": "husky install",
     "prepublishOnly": "pnpm run build"
@@ -21,6 +22,7 @@
     "@hideoo/prettier-config": "0.1.0",
     "@hideoo/tsconfig": "0.1.0",
     "@types/node": "16.11.46",
+    "c8": "7.12.0",
     "eslint": "8.20.0",
     "husky": "8.0.1",
     "lint-staged": "13.0.3",

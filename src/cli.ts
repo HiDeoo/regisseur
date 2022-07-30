@@ -1,16 +1,14 @@
 import cac from 'cac'
 import { red } from 'kolorist'
 
-import { listAction } from './actions'
+import { runAction, listAction } from './actions'
 
 const cli = cac('regisseur')
 
 cli.help()
 
-cli.command('[file]', '// TODO').action((file) => {
-  console.log('🚨 [cli.ts:14] file', file)
-})
-
+// FIXME(HiDeoo)
+cli.command('[act]', '// TODO').action(runAction)
 cli.command('list', '// TODO').action(listAction)
 
 async function run() {

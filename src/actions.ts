@@ -1,8 +1,15 @@
 import { bold, cyan, dim, red } from 'kolorist'
 
 import { ACTS_DIRECTORY } from './constants/act'
-import { findAllActs } from './libs/act'
+import { findAct, findAllActs } from './libs/act'
 import { pluralize } from './libs/string'
+
+export async function runAction(actArgument: string | undefined) {
+  const act = await findAct(actArgument)
+
+  // TODO(HiDeoo)
+  console.log('🚨 [actions.ts:10] act', act)
+}
 
 export async function listAction() {
   const acts = await findAllActs()

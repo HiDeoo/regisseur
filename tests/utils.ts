@@ -9,7 +9,11 @@ export async function withFixture(fixtureName: string, test: () => Promise<void>
     .spyOn(act, 'ACTS_DIRECTORY', 'get')
     .mockReturnValue(path.join('fixtures', fixtureName, act.ACTS_DIRECTORY))
 
-  await test()
+  try {
+    await test()
 
-  actsPathSpy.mockRestore()
+    actsPathSpy.mockRestore()
+  } finally {
+    actsPathSpy.mockRestore()
+  }
 }

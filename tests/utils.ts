@@ -1,19 +1,24 @@
 import path from 'node:path'
 
-import { vi } from 'vitest'
+import { type SpyInstance, vi } from 'vitest'
 
 import * as play from '../src/constants/play'
 
-export async function withFixture(fixtureName: string, test: () => Promise<void>) {
+export async function withFixture(fixtureName: string, test: (testParams: TestParameters) => Promise<void>) {
   const playsPathSpy = vi
     .spyOn(play, 'PLAYS_DIRECTORY', 'get')
     .mockReturnValue(path.join('fixtures', fixtureName, play.PLAYS_DIRECTORY))
 
-  try {
-    await test()
+  const logMock = vi.spyOn(console, 'log').mockImplementation(() => undefined)
 
-    playsPathSpy.mockRestore()
+  try {
+    await test({ log: logMock })
   } finally {
+    logMock.mockRestore()
     playsPathSpy.mockRestore()
   }
+}
+
+interface TestParameters {
+  log: SpyInstance
 }

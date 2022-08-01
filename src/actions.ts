@@ -9,10 +9,9 @@ import { pluralize } from './libs/string'
 
 export async function runAction(pathOrFileNameOrName: string | undefined) {
   const play = await findPlay(pathOrFileNameOrName)
+  getActs(play)
 
   console.log(cyan(`Starting play '${play.name ?? play.fileName}':`))
-
-  getActs(play)
 }
 
 export async function listAction() {

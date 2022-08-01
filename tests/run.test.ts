@@ -121,6 +121,13 @@ test('should error with an invalid name', async () =>
     }
   }))
 
+test('should not log the play file name or name if there are any validation error', async () =>
+  withFixture('multiple-plays-no-default', async ({ log }) => {
+    await expect(runAction('no-acts-property')).rejects.toThrowError()
+
+    expect(log).not.toHaveBeenCalled()
+  }))
+
 test('should error if the play does not have any acts', async () =>
   withFixture('multiple-plays-no-default', async () => {
     await expect(runAction('no-acts-property')).rejects.toThrowError(getActsReadErrorRegExp)

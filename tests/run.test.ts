@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest'
 import { ZodError } from 'zod'
 
 import { PLAYS_DIRECTORY, PLAY_EXTENSION } from '../src/constants/play'
+import { getActs } from '../src/libs/act'
 import { findPlay } from '../src/libs/play'
 
 import { withFixture } from './utils'
@@ -44,22 +45,24 @@ describe('findPlay', () => {
 
   test('should return the play matching a file name over a name', async () =>
     withFixture('multiple-plays-no-default', async () => {
-      const fileName = 'test2'
+      const fileName = 'multiple-acts'
 
-      let play = await findPlay('test3')
+      let play = await findPlay('no-acts')
 
-      expect(play).toMatchPlay({ fileName: 'test3', name: fileName })
+      expect(play).toMatchPlay({ fileName: 'no-acts', name: fileName })
 
       play = await findPlay(fileName)
 
-      expect(play).toMatchPlay({ fileName: fileName, name: 'Test 2' })
+      expect(play).toMatchPlay({ fileName: fileName, name: 'Multiple Acts' })
     }))
 
   test('should return the play matching a name', async () =>
     withFixture('multiple-plays-no-default', async () => {
-      const play = await findPlay('Test 2')
+      const name = 'Multiple Acts'
 
-      expect(play).toMatchPlay({ fileName: 'test2', name: 'Test 2' })
+      const play = await findPlay(name)
+
+      expect(play).toMatchPlay({ fileName: 'multiple-acts', name })
     }))
 
   test('should error with an argument not matching a path, file name or name', async () =>
@@ -107,5 +110,54 @@ describe('findPlay', () => {
           }
         }
       }
+    }))
+})
+
+describe('getActs', () => {
+  const getActsReadErrorRegExp = /^Could not read acts from the play file at '/
+
+  test('should error if the acts property is missing', async () =>
+    withFixture('multiple-plays-no-default', async () => {
+      const play = await findPlay('no-acts-property')
+
+      expect(() => getActs(play)).toThrowError(getActsReadErrorRegExp)
+    }))
+
+  test('should return no acts', async () =>
+    withFixture('multiple-plays-no-default', async () => {
+      const play = await findPlay('no-acts')
+      const acts = getActs(play)
+
+      expect(acts).toHaveLength(0)
+    }))
+
+  test('should return a single act', async () =>
+    withFixture('multiple-plays-no-default', async () => {
+      const play = await findPlay('single-act')
+      const acts = getActs(play)
+
+      expect(acts).toHaveLength(1)
+    }))
+
+  test('should return multiple acts', async () =>
+    withFixture('multiple-plays-no-default', async () => {
+      const play = await findPlay('multiple-acts')
+      const acts = getActs(play)
+
+      expect(acts).toHaveLength(3)
+    }))
+
+  test('should error if an act does not have a title', async () =>
+    withFixture('multiple-plays-no-default', async () => {
+      const play = await findPlay('act-with-no-title')
+
+      expect(() => getActs(play)).toThrowError(getActsReadErrorRegExp)
+    }))
+
+  test('should error if an act does not have a scenes property', async () =>
+    withFixture('multiple-plays-no-default', async () => {
+      const play = await findPlay('act-with-no-scenes')
+
+      expect(() => getActs(play)).toThrowError(getActsReadErrorRegExp)
     }))
 })

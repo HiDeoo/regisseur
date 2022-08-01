@@ -3,6 +3,7 @@ import { red } from 'kolorist'
 import { ZodError } from 'zod'
 
 import { runAction, listAction } from './actions'
+import { logValidationError } from './libs/error'
 
 const cli = cac('regisseur')
 
@@ -24,7 +25,7 @@ async function run() {
 
     if (isError && error.cause) {
       if (error.cause instanceof ZodError) {
-        console.error('Validation error:', error.cause.format())
+        logValidationError(error.cause)
       } else {
         console.error(error.cause)
       }

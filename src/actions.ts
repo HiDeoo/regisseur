@@ -3,14 +3,15 @@ import path from 'node:path'
 import { bold, cyan, dim, red } from 'kolorist'
 
 import { PLAYS_DIRECTORY } from './constants/play'
+import { getActs } from './libs/act'
 import { findPlay, findAllPlays } from './libs/play'
 import { pluralize } from './libs/string'
 
 export async function runAction(pathOrFileNameOrName: string | undefined) {
   const play = await findPlay(pathOrFileNameOrName)
+  const acts = getActs(play)
 
-  // TODO(HiDeoo)
-  console.log('🚨 [actions.ts:10] play', play)
+  console.log('🚨 [actions.ts:14] acts', acts)
 }
 
 export async function listAction() {

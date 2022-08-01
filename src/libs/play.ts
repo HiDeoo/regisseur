@@ -9,7 +9,7 @@ import { PLAYS_DIRECTORY, PLAY_EXTENSION } from '../constants/play'
 
 import { errorWithCause } from './error'
 
-const nameSchema = z.object({
+const metadataSchema = z.object({
   name: z.string().optional(),
 })
 
@@ -124,15 +124,15 @@ async function loadPlay(playPath: string): Promise<PlayData> {
   try {
     const file = await fs.readFile(playPath, 'utf8')
     const content = parse(file)
-    const { name } = nameSchema.parse(content)
+    const { name } = metadataSchema.parse(content)
 
-    const nameAndContent: PlayData = { content }
+    const data: PlayData = { content }
 
     if (name) {
-      nameAndContent.name = name
+      data.name = name
     }
 
-    return nameAndContent
+    return data
   } catch (error) {
     throw errorWithCause(`Could not read the play file at '${playPath}'.`, error)
   }
@@ -143,11 +143,11 @@ interface Plays {
   def?: Play // Default but aliased to avoid the reserved keyword.
 }
 
-export interface Play {
+export interface Play extends PlayMetadata {
   content: unknown
   fileName: string
-  name?: string
   path: string
 }
 
+type PlayMetadata = z.infer<typeof metadataSchema>
 type PlayData = Pick<Play, 'content' | 'name'>

@@ -1,11 +1,17 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
+import { parse } from 'hjson'
 import glob from 'tiny-glob'
+import { z } from 'zod'
 
 import { PLAYS_DIRECTORY, PLAY_EXTENSION } from '../constants/play'
 
-import { getContent, type NameAndContent } from './content'
+import { errorWithCause } from './error'
+
+const nameSchema = z.object({
+  name: z.string().optional(),
+})
 
 export async function findAllPlays(): Promise<Plays> {
   await ensurePlaysDirectory()
@@ -85,10 +91,10 @@ export async function findPlay(pathOrFileNameOrName: string | undefined) {
 }
 
 async function getPlayFromPath(playPath: string): Promise<Play> {
-  const content = await getContent(playPath)
+  const data = await loadPlay(playPath)
 
   return {
-    ...content,
+    ...data,
     fileName: path.basename(playPath),
     path: path.resolve(playPath),
   }
@@ -114,12 +120,34 @@ async function ensurePlaysDirectory(): Promise<true> {
   }
 }
 
+async function loadPlay(playPath: string): Promise<PlayData> {
+  try {
+    const file = await fs.readFile(playPath, 'utf8')
+    const content = parse(file)
+    const { name } = nameSchema.parse(content)
+
+    const nameAndContent: PlayData = { content }
+
+    if (name) {
+      nameAndContent.name = name
+    }
+
+    return nameAndContent
+  } catch (error) {
+    throw errorWithCause(`Could not read the play file at '${playPath}'.`, error)
+  }
+}
+
 interface Plays {
   all: Play[]
   def?: Play // Default but aliased to avoid the reserved keyword.
 }
 
-export type Play = {
+export interface Play {
+  content: unknown
   fileName: string
+  name?: string
   path: string
-} & NameAndContent
+}
+
+type PlayData = Pick<Play, 'content' | 'name'>

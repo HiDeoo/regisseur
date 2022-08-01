@@ -9,7 +9,7 @@ const cli = cac('regisseur')
 cli.help()
 
 // FIXME(HiDeoo)
-cli.command('[act]', '// TODO').action(runAction)
+cli.command('[play]', '// TODO').action(runAction)
 cli.command('list', '// TODO').action(listAction)
 
 async function run() {

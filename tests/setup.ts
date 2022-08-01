@@ -1,13 +1,13 @@
 import { expect } from 'vitest'
 
-import { ACT_EXTENSION } from '../src/constants/act'
-import { type Act } from '../src/libs/act'
+import { PLAY_EXTENSION } from '../src/constants/play'
+import { type Play } from '../src/libs/play'
 
 expect.extend({
-  toMatchAct(received: Act, expected: ActMatcherOptions) {
+  toMatchPlay(received: Play, expected: PlayMatcherOptions) {
     let pass: boolean =
-      this.equals(`${expected.fileName}.${ACT_EXTENSION}`, received.fileName) &&
-      this.equals(expect.stringMatching(new RegExp(`${expected.fileName}\\.${ACT_EXTENSION}$`)), received.path) &&
+      this.equals(`${expected.fileName}.${PLAY_EXTENSION}`, received.fileName) &&
+      this.equals(expect.stringMatching(new RegExp(`${expected.fileName}\\.${PLAY_EXTENSION}$`)), received.path) &&
       this.equals(expect.anything(), received.content)
 
     if (expected.name && pass) {
@@ -16,7 +16,7 @@ expect.extend({
 
     return {
       message: () =>
-        `Expected act to ${this.isNot ? ' not' : ''}match:
+        `Expected play to ${this.isNot ? ' not' : ''}match:
   ${this.utils.printExpected(expected)}
 Received:
   ${this.utils.printReceived(received)}`,
@@ -33,10 +33,10 @@ declare global {
 }
 
 interface CustomMatchers<R = unknown> {
-  toMatchAct(options: ActMatcherOptions): R
+  toMatchPlay(options: PlayMatcherOptions): R
 }
 
-interface ActMatcherOptions {
+interface PlayMatcherOptions {
   fileName: string
   name?: string
 }

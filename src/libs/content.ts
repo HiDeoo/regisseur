@@ -23,7 +23,7 @@ export async function getContent(path: string): Promise<NameAndContent> {
 
     return nameAndContent
   } catch (error) {
-    throw errorWithCause(`Could not read the act file at '${path}'.`, error)
+    throw errorWithCause(`Could not read the play file at '${path}'.`, error)
   }
 }
 

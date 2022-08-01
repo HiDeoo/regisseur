@@ -2,18 +2,18 @@ import path from 'node:path'
 
 import { vi } from 'vitest'
 
-import * as act from '../src/constants/act'
+import * as play from '../src/constants/play'
 
 export async function withFixture(fixtureName: string, test: () => Promise<void>) {
-  const actsPathSpy = vi
-    .spyOn(act, 'ACTS_DIRECTORY', 'get')
-    .mockReturnValue(path.join('fixtures', fixtureName, act.ACTS_DIRECTORY))
+  const playsPathSpy = vi
+    .spyOn(play, 'PLAYS_DIRECTORY', 'get')
+    .mockReturnValue(path.join('fixtures', fixtureName, play.PLAYS_DIRECTORY))
 
   try {
     await test()
 
-    actsPathSpy.mockRestore()
+    playsPathSpy.mockRestore()
   } finally {
-    actsPathSpy.mockRestore()
+    playsPathSpy.mockRestore()
   }
 }

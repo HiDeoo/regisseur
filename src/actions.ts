@@ -2,35 +2,35 @@ import path from 'node:path'
 
 import { bold, cyan, dim, red } from 'kolorist'
 
-import { ACTS_DIRECTORY } from './constants/act'
-import { findAct, findAllActs } from './libs/act'
+import { PLAYS_DIRECTORY } from './constants/play'
+import { findPlay, findAllPlays } from './libs/play'
 import { pluralize } from './libs/string'
 
-export async function runAction(actArgument: string | undefined) {
-  const act = await findAct(actArgument)
+export async function runAction(pathOrFileNameOrName: string | undefined) {
+  const play = await findPlay(pathOrFileNameOrName)
 
   // TODO(HiDeoo)
-  console.log('🚨 [actions.ts:10] act', act)
+  console.log('🚨 [actions.ts:10] play', play)
 }
 
 export async function listAction() {
-  const acts = await findAllActs()
+  const plays = await findAllPlays()
 
-  if (acts.all.length === 0) {
-    console.log(red(`No acts found in the '${ACTS_DIRECTORY}' directory.`))
+  if (plays.all.length === 0) {
+    console.log(red(`No plays found in the '${PLAYS_DIRECTORY}' directory.`))
 
     return
   }
 
-  console.log(cyan(`Found ${acts.all.length} ${pluralize(acts.all.length, 'act')}:`))
+  console.log(cyan(`Found ${plays.all.length} ${pluralize(plays.all.length, 'play')}:`))
 
-  for (const act of acts.all) {
-    const isDefaultAct = act.path === acts.def?.path
-    const actPath = path.basename(act.path)
+  for (const play of plays.all) {
+    const isDefaultPlay = play.path === plays.def?.path
+    const playPath = path.basename(play.path)
 
     console.log(
-      `  ${isDefaultAct ? bold('*') : dim('-')} ${isDefaultAct ? bold(actPath) : actPath}${
-        act.name ? dim(` (name: ${act.name})`) : ''
+      `  ${isDefaultPlay ? bold('*') : dim('-')} ${isDefaultPlay ? bold(playPath) : playPath}${
+        play.name ? dim(` (name: ${play.name})`) : ''
       }`
     )
   }

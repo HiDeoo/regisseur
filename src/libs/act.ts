@@ -36,6 +36,10 @@ export async function playActs(acts: Act[]) {
     output: process.stdout,
   })
 
+  rl.on('SIGINT', () => {
+    process.exit(1)
+  })
+
   try {
     for (const [index, act] of acts.entries()) {
       await playAct(index, act, rl)

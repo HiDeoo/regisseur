@@ -1,0 +1,10 @@
+{
+  name: Test 2 Name
+
+  acts: [
+     {
+      title: Act 1
+      scenes: []
+    }
+  ]
+}

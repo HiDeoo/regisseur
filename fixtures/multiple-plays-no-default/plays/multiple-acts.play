@@ -1,0 +1,30 @@
+{
+  name: Multiple Acts
+
+  acts: [
+    {
+      title: Act 1
+      scenes: [
+        Do the thing 1.1
+        Do the thing 1.2
+        Do the thing 1.3
+      ]
+    }
+    {
+      title: Act 2
+      scenes: [
+        Do the thing 2.1
+        Do the thing 2.2
+        Do the thing 2.3
+      ]
+    }
+    {
+      title: Act 3
+      scenes: [
+        Do the thing 3.1
+        Do the thing 3.2
+        Do the thing 3.3
+      ]
+    }
+  ]
+}

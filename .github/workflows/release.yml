@@ -1,20 +1,14 @@
-name: integration
+name: release
 
 on:
   push:
-    branches:
-      - '**'
-    tags-ignore:
-      - '**'
-  pull_request:
+    tags:
+      - 'v*.*.*'
 
 jobs:
-  lint_test:
-    name: Lint & Test
+  publish:
+    name: Release
     runs-on: ubuntu-latest
-    # Run on external PRs only as the workflow will be already running for the push event on the branch for internal
-    # PRs.
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -23,6 +17,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 14
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.2
@@ -46,10 +41,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Lint
-        run: pnpm lint
-
-      - name: Test
-        run: pnpm test
+      - run: pnpx changelogithub
         env:
-          NODE_DISABLE_COLORS: 1
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

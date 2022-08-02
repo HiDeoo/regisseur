@@ -28,6 +28,7 @@ export async function withFixture(fixtureName: string, test: (testParams: TestPa
 
   const rlMock = vi.spyOn(readline, 'createInterface').mockReturnValue({
     close: vi.fn(),
+    on: vi.fn(),
     question: questionMock,
   } as unknown as Interface)
 

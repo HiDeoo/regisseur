@@ -3,15 +3,17 @@ import path from 'node:path'
 import { bold, cyan, dim, red } from 'kolorist'
 
 import { PLAYS_DIRECTORY } from './constants/play'
-import { getActs } from './libs/act'
+import { getActs, playActs } from './libs/act'
 import { findPlay, findAllPlays } from './libs/play'
 import { pluralize } from './libs/string'
 
 export async function runAction(pathOrFileNameOrName: string | undefined) {
   const play = await findPlay(pathOrFileNameOrName)
-  getActs(play)
+  const acts = getActs(play)
 
   console.log(cyan(`Starting play '${play.name ?? play.fileName}':`))
+
+  await playActs(acts)
 }
 
 export async function listAction() {

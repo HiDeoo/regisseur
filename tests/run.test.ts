@@ -69,8 +69,8 @@ test('should run the play matching a file name over a name', async () =>
   }))
 
 test('should run the play matching a name', async () =>
-  withFixture('multiple-plays-no-default', async ({ log }) => {
-    const name = 'Multiple Acts'
+  withFixture('multiple-plays-default', async ({ log }) => {
+    const name = 'Test 2 Name'
 
     await runAction(name)
 
@@ -143,6 +143,25 @@ test('should error if an act does not have scenes', async () =>
     await expect(runAction('act-with-no-scenes')).rejects.toThrowError(getActsReadErrorRegExp)
   }))
 
+test('should log multiple acts', async () =>
+  withFixture('multiple-plays-no-default', async ({ log, question }) => {
+    await runAction('multiple-acts')
+
+    expect(question).toHaveBeenCalledTimes(3)
+
+    expect(log).toHaveBeenCalledTimes(4)
+    expect(log).toHaveBeenNthCalledWith(1, getPlayNameOutput('Multiple Acts'))
+    expect(log).toHaveBeenNthCalledWith(2, getActOutput(1, 'Act 1'))
+    expect(log).toHaveBeenNthCalledWith(3, getActOutput(2, 'Act 2'))
+    expect(log).toHaveBeenNthCalledWith(4, getActOutput(3, 'Act 3'))
+
+    // TODO(HiDeoo) steps
+  }))
+
 function getPlayNameOutput(fileNameOrName: string) {
   return `Starting play '${fileNameOrName}':`
+}
+
+function getActOutput(index: number, title: string) {
+  return `#${index} ${title}`
 }

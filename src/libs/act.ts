@@ -1,3 +1,5 @@
+import readline from 'node:readline'
+
 import { z } from 'zod'
 
 import { errorWithCause } from './error'
@@ -14,6 +16,8 @@ const contentSchema = z.object({
   acts: actSchema.array(),
 })
 
+export const defaultConfirmationString = 'done'
+
 export function getActs(play: Play): Act[] {
   try {
     const content = contentSchema.parse(play.content)
@@ -22,6 +26,39 @@ export function getActs(play: Play): Act[] {
   } catch (error) {
     throw errorWithCause(`Could not read acts from the play file at '${play.path}'.`, error)
   }
+}
+
+export async function playActs(acts: Act[]) {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  })
+
+  try {
+    for (const [index, act] of acts.entries()) {
+      await playAct(index, act, rl)
+    }
+  } catch (error) {
+    // FIXME(HiDeoo)
+    console.error('🚨 [act.ts:40] error', error)
+  } finally {
+    rl.close()
+  }
+}
+
+function playAct(index: number, act: Act, rl: readline.Interface) {
+  // eslint-disable-next-line no-console
+  console.log(`#${index + 1} ${act.title}`)
+
+  return new Promise<void>((resolve, reject) => {
+    rl.question(`Type '${defaultConfirmationString}' when you're done: `, (answer) => {
+      if (answer === defaultConfirmationString) {
+        return resolve()
+      }
+
+      return reject(new Error('User aborted.'))
+    })
+  })
 }
 
 export type Act = z.infer<typeof actSchema>

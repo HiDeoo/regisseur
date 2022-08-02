@@ -2,7 +2,7 @@
   "extends": "@hideoo",
   "overrides": [
     {
-      "files": ["src/actions.ts"],
+      "files": ["src/actions.ts", "src/libs/act.ts"],
       "rules": {
         "no-console": "off"
       }

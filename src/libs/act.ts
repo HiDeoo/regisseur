@@ -1,5 +1,6 @@
 import readline from 'node:readline'
 
+import { bold, dim } from 'kolorist'
 import { z } from 'zod'
 
 import { errorWithCause } from './error'
@@ -47,11 +48,14 @@ export async function playActs(acts: Act[]) {
 }
 
 function playAct(index: number, act: Act, rl: readline.Interface) {
-  // eslint-disable-next-line no-console
-  console.log(`#${index + 1} ${act.title}`)
+  console.log(`\n${dim(`#${index + 1}`)} ${bold(act.title)}`)
+
+  for (const scene of act.scenes) {
+    console.log(` ${dim('-')} ${scene}`)
+  }
 
   return new Promise<void>((resolve, reject) => {
-    rl.question(`Type '${defaultConfirmationString}' when you're done: `, (answer) => {
+    rl.question(`\nType '${defaultConfirmationString}' when you're done: `, (answer) => {
       if (answer === defaultConfirmationString) {
         return resolve()
       }

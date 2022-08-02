@@ -4,7 +4,11 @@
   acts: [
     {
       title: Act 1
-      scenes: []
+      scenes: [
+        Do the thing 1
+        Do the thing 2
+        Do the thing 3
+      ]
     }
   ]
 }

@@ -148,11 +148,13 @@ test('should run a single act', async () =>
 
     expect(question).toHaveBeenCalledTimes(1)
 
-    expect(log).toHaveBeenCalledTimes(2)
+    expect(log).toHaveBeenCalledTimes(5)
     expect(log).toHaveBeenNthCalledWith(1, getPlayNameOutput('multiple-acts'))
-    expect(log).toHaveBeenNthCalledWith(2, getActOutput(1, 'Act 1'))
 
-    // TODO(HiDeoo) steps
+    expect(log).toHaveBeenNthCalledWith(2, getActOutput(1, 'Act 1'))
+    expect(log).toHaveBeenNthCalledWith(3, getSceneOutput('Do the thing 1'))
+    expect(log).toHaveBeenNthCalledWith(4, getSceneOutput('Do the thing 2'))
+    expect(log).toHaveBeenNthCalledWith(5, getSceneOutput('Do the thing 3'))
   }))
 
 test('should run multiple acts', async () =>
@@ -161,19 +163,33 @@ test('should run multiple acts', async () =>
 
     expect(question).toHaveBeenCalledTimes(3)
 
-    expect(log).toHaveBeenCalledTimes(4)
+    expect(log).toHaveBeenCalledTimes(13)
     expect(log).toHaveBeenNthCalledWith(1, getPlayNameOutput('Multiple Acts'))
-    expect(log).toHaveBeenNthCalledWith(2, getActOutput(1, 'Act 1'))
-    expect(log).toHaveBeenNthCalledWith(3, getActOutput(2, 'Act 2'))
-    expect(log).toHaveBeenNthCalledWith(4, getActOutput(3, 'Act 3'))
 
-    // TODO(HiDeoo) steps
+    expect(log).toHaveBeenNthCalledWith(2, getActOutput(1, 'Act 1'))
+    expect(log).toHaveBeenNthCalledWith(3, getSceneOutput('Do the thing 1.1'))
+    expect(log).toHaveBeenNthCalledWith(4, getSceneOutput('Do the thing 1.2'))
+    expect(log).toHaveBeenNthCalledWith(5, getSceneOutput('Do the thing 1.3'))
+
+    expect(log).toHaveBeenNthCalledWith(6, getActOutput(2, 'Act 2'))
+    expect(log).toHaveBeenNthCalledWith(7, getSceneOutput('Do the thing 2.1'))
+    expect(log).toHaveBeenNthCalledWith(8, getSceneOutput('Do the thing 2.2'))
+    expect(log).toHaveBeenNthCalledWith(9, getSceneOutput('Do the thing 2.3'))
+
+    expect(log).toHaveBeenNthCalledWith(10, getActOutput(3, 'Act 3'))
+    expect(log).toHaveBeenNthCalledWith(11, getSceneOutput('Do the thing 3.1'))
+    expect(log).toHaveBeenNthCalledWith(12, getSceneOutput('Do the thing 3.2'))
+    expect(log).toHaveBeenNthCalledWith(13, getSceneOutput('Do the thing 3.3'))
   }))
 
 function getPlayNameOutput(fileNameOrName: string) {
-  return `Starting play '${fileNameOrName}':`
+  return `Starting play '${fileNameOrName}'.`
 }
 
 function getActOutput(index: number, title: string) {
-  return `#${index} ${title}`
+  return `\n#${index} ${title}`
+}
+
+function getSceneOutput(text: string) {
+  return ` - ${text}`
 }

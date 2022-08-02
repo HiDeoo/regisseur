@@ -17,7 +17,7 @@ export async function runAction(pathOrFileNameOrName: string | undefined) {
     throw new Error(`No acts found in the '${nameOrFileName}' play.`)
   }
 
-  console.log(cyan(`Starting play '${nameOrFileName}':`))
+  console.log(cyan(`Starting play '${nameOrFileName}'.`))
 
   await playActs(acts)
 }

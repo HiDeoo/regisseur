@@ -142,7 +142,20 @@ test('should error if a play does not have acts', async () =>
     await expect(runAction('no-acts')).rejects.toThrowError(`No acts found in the 'no-acts.play' play.`)
   }))
 
-test('should log multiple acts', async () =>
+test('should run a single act', async () =>
+  withFixture('multiple-plays-no-default', async ({ log, question }) => {
+    await runAction('single-act')
+
+    expect(question).toHaveBeenCalledTimes(1)
+
+    expect(log).toHaveBeenCalledTimes(2)
+    expect(log).toHaveBeenNthCalledWith(1, getPlayNameOutput('multiple-acts'))
+    expect(log).toHaveBeenNthCalledWith(2, getActOutput(1, 'Act 1'))
+
+    // TODO(HiDeoo) steps
+  }))
+
+test('should run multiple acts', async () =>
   withFixture('multiple-plays-no-default', async ({ log, question }) => {
     await runAction('multiple-acts')
 

@@ -20,7 +20,6 @@ test('should run the default play with no argument', async () =>
   withFixture('single-play-default', async ({ log }) => {
     await runAction(undefined)
 
-    expect(log).toHaveBeenCalledOnce()
     expect(log).toHaveBeenNthCalledWith(1, getPlayNameOutput('default.play'))
   }))
 
@@ -30,7 +29,6 @@ test('should run the play matching a path', async () =>
 
     await runAction(`./fixtures/multiple-plays-default/plays/${fileName}`)
 
-    expect(log).toHaveBeenCalledOnce()
     expect(log).toHaveBeenNthCalledWith(1, getPlayNameOutput(fileName))
   }))
 
@@ -38,7 +36,6 @@ test('should run the play with a name matching a path', async () =>
   withFixture('multiple-plays-default', async ({ log }) => {
     await runAction(`./fixtures/multiple-plays-default/plays/test2.${PLAY_EXTENSION}`)
 
-    expect(log).toHaveBeenCalledOnce()
     expect(log).toHaveBeenNthCalledWith(1, getPlayNameOutput('Test 2 Name'))
   }))
 
@@ -48,18 +45,16 @@ test('should run the the play matching a file name with no extension', async () 
 
     await runAction(fileName)
 
-    expect(log).toHaveBeenCalledOnce()
     expect(log).toHaveBeenNthCalledWith(1, getPlayNameOutput(`${fileName}.${PLAY_EXTENSION}`))
   }))
 
 test('should run the play matching a file name over a name', async () =>
   withFixture('multiple-plays-no-default', async ({ log }) => {
-    const fileName = 'no-acts'
+    const fileName = 'single-act'
     const name = 'multiple-acts'
 
     await runAction(fileName)
 
-    expect(log).toHaveBeenCalledOnce()
     expect(log).toHaveBeenNthCalledWith(1, getPlayNameOutput(name))
 
     // Let's make sure the play name match another play file name.
@@ -74,7 +69,6 @@ test('should run the play matching a name', async () =>
 
     await runAction(name)
 
-    expect(log).toHaveBeenCalledOnce()
     expect(log).toHaveBeenNthCalledWith(1, getPlayNameOutput(name))
   }))
 
@@ -141,6 +135,11 @@ test('should error if an act does not have a title', async () =>
 test('should error if an act does not have scenes', async () =>
   withFixture('multiple-plays-no-default', async () => {
     await expect(runAction('act-with-no-scenes')).rejects.toThrowError(getActsReadErrorRegExp)
+  }))
+
+test('should error if a play does not have acts', async () =>
+  withFixture('multiple-plays-no-default', async () => {
+    await expect(runAction('no-acts')).rejects.toThrowError(`No acts found in the 'no-acts.play' play.`)
   }))
 
 test('should log multiple acts', async () =>

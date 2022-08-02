@@ -11,7 +11,13 @@ export async function runAction(pathOrFileNameOrName: string | undefined) {
   const play = await findPlay(pathOrFileNameOrName)
   const acts = getActs(play)
 
-  console.log(cyan(`Starting play '${play.name ?? play.fileName}':`))
+  const nameOrFileName = play.name ?? play.fileName
+
+  if (acts.length === 0) {
+    throw new Error(`No acts found in the '${nameOrFileName}' play.`)
+  }
+
+  console.log(cyan(`Starting play '${nameOrFileName}':`))
 
   await playActs(acts)
 }

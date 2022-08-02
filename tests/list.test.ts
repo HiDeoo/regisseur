@@ -69,8 +69,8 @@ test('should not identify a default with multiple plays and no explicit default'
     expect(log).toHaveBeenNthCalledWith(3, getPlayOutput('act-with-no-title', false))
     expect(log).toHaveBeenNthCalledWith(4, getPlayOutput('multiple-acts', false, 'Multiple Acts'))
     expect(log).toHaveBeenNthCalledWith(5, getPlayOutput('no-acts-property', false))
-    expect(log).toHaveBeenNthCalledWith(6, getPlayOutput('no-acts', false, 'multiple-acts'))
-    expect(log).toHaveBeenNthCalledWith(7, getPlayOutput('single-act', false))
+    expect(log).toHaveBeenNthCalledWith(6, getPlayOutput('no-acts', false))
+    expect(log).toHaveBeenNthCalledWith(7, getPlayOutput('single-act', false, 'multiple-acts'))
 
     const { def } = await findAllPlays()
 

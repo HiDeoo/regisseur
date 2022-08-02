@@ -1,4 +1,6 @@
 {
+  name: multiple-acts
+
   acts: [
     {
       title: Act 1

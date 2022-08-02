@@ -16,7 +16,9 @@ export async function withFixture(fixtureName: string, test: (testParams: TestPa
   let questionCount = 0
   let answers: string[]
 
-  const mockAnswers: TestParameters['mockAnswers'] = (mockedAnswers) => (answers = mockedAnswers)
+  const mockAnswers: TestParameters['mockAnswers'] = (mockedAnswers) => {
+    answers = mockedAnswers
+  }
 
   const questionMock = vi.fn().mockImplementation((_query: string, callback: (answer: string) => void) => {
     callback((answers ? answers[questionCount] : undefined) ?? defaultConfirmationString)

@@ -3,6 +3,7 @@ import { ZodError } from 'zod'
 
 import { runAction } from '../src/actions'
 import { PLAYS_DIRECTORY, PLAY_EXTENSION } from '../src/constants/play'
+import { UserAbortError } from '../src/libs/error'
 import { findPlay } from '../src/libs/play'
 
 import { withFixture } from './utils'
@@ -180,6 +181,28 @@ test('should run multiple acts', async () =>
     expect(log).toHaveBeenNthCalledWith(11, getSceneOutput('Do the thing 3.1'))
     expect(log).toHaveBeenNthCalledWith(12, getSceneOutput('Do the thing 3.2'))
     expect(log).toHaveBeenNthCalledWith(13, getSceneOutput('Do the thing 3.3'))
+  }))
+
+test('should run and stop at a specific act', async () =>
+  withFixture('multiple-plays-no-default', async ({ log, mockAnswers, question }) => {
+    mockAnswers(['done', 'stop'])
+
+    await expect(runAction('multiple-acts')).rejects.toThrowError(UserAbortError)
+
+    expect(question).toHaveBeenCalledTimes(2)
+
+    expect(log).toHaveBeenCalledTimes(9)
+    expect(log).toHaveBeenNthCalledWith(1, getPlayNameOutput('Multiple Acts'))
+
+    expect(log).toHaveBeenNthCalledWith(2, getActOutput(1, 'Act 1'))
+    expect(log).toHaveBeenNthCalledWith(3, getSceneOutput('Do the thing 1.1'))
+    expect(log).toHaveBeenNthCalledWith(4, getSceneOutput('Do the thing 1.2'))
+    expect(log).toHaveBeenNthCalledWith(5, getSceneOutput('Do the thing 1.3'))
+
+    expect(log).toHaveBeenNthCalledWith(6, getActOutput(2, 'Act 2'))
+    expect(log).toHaveBeenNthCalledWith(7, getSceneOutput('Do the thing 2.1'))
+    expect(log).toHaveBeenNthCalledWith(8, getSceneOutput('Do the thing 2.2'))
+    expect(log).toHaveBeenNthCalledWith(9, getSceneOutput('Do the thing 2.3'))
   }))
 
 function getPlayNameOutput(fileNameOrName: string) {

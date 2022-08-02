@@ -3,7 +3,7 @@ import readline from 'node:readline'
 import { bold, dim } from 'kolorist'
 import { z } from 'zod'
 
-import { errorWithCause } from './error'
+import { errorWithCause, UserAbortError } from './error'
 import { type Play } from './play'
 
 const actSchema = z
@@ -18,6 +18,7 @@ const contentSchema = z.object({
 })
 
 export const defaultConfirmationString = 'done'
+export const defaultCancellationString = 'stop'
 
 export function getActs(play: Play): Act[] {
   try {
@@ -39,9 +40,6 @@ export async function playActs(acts: Act[]) {
     for (const [index, act] of acts.entries()) {
       await playAct(index, act, rl)
     }
-  } catch (error) {
-    // FIXME(HiDeoo)
-    console.error('🚨 [act.ts:40] error', error)
   } finally {
     rl.close()
   }
@@ -54,14 +52,31 @@ function playAct(index: number, act: Act, rl: readline.Interface) {
     console.log(` ${dim('-')} ${scene}`)
   }
 
-  return new Promise<void>((resolve, reject) => {
-    rl.question(`\nType '${defaultConfirmationString}' when you're done: `, (answer) => {
-      if (answer === defaultConfirmationString) {
-        return resolve()
-      }
+  return confirmAct(index, act, rl)
+}
 
-      return reject(new Error('User aborted.'))
-    })
+function confirmAct(index: number, act: Act, rl: readline.Interface, reconfirm = false) {
+  return new Promise<void>((resolve, reject) => {
+    rl.question(
+      `${
+        reconfirm ? '' : '\n'
+      }Type '${defaultConfirmationString}' or '${defaultCancellationString}' when you're done: `,
+      async (answer) => {
+        if (answer === defaultConfirmationString) {
+          return resolve()
+        } else if (answer === defaultCancellationString) {
+          return reject(new UserAbortError())
+        }
+
+        try {
+          await confirmAct(index, act, rl, true)
+
+          return resolve()
+        } catch {
+          return reject(new UserAbortError())
+        }
+      }
+    )
   })
 }
 

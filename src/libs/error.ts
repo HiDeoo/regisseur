@@ -17,3 +17,10 @@ export function logValidationError(error: ZodError) {
     generateErrorMessage(error.issues, { delimiter: { component: ' - ', error: '\n\t' }, prefix: '\n\t' })
   )
 }
+
+export class UserAbortError extends Error {
+  constructor(message?: string) {
+    super(message)
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}

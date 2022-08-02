@@ -3,7 +3,7 @@ import { red } from 'kolorist'
 import { ZodError } from 'zod'
 
 import { runAction, listAction } from './actions'
-import { logValidationError } from './libs/error'
+import { logValidationError, UserAbortError } from './libs/error'
 
 const cli = cac('regisseur')
 
@@ -19,6 +19,10 @@ async function run() {
 
     await cli.runMatchedCommand()
   } catch (error) {
+    if (error instanceof UserAbortError) {
+      return process.exit(1)
+    }
+
     const isError = error instanceof Error
 
     console.error(red(`${isError ? error.message : error}`))

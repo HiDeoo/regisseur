@@ -20,7 +20,7 @@ async function run() {
     await cli.runMatchedCommand()
   } catch (error) {
     if (error instanceof UserAbortError) {
-      return process.exit(1)
+      process.exit(1)
     }
 
     const isError = error instanceof Error

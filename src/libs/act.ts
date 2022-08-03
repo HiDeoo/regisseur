@@ -9,6 +9,7 @@ import { type Play } from './play'
 const actSchema = z
   .object({
     title: z.string(),
+    confirmation: z.string().optional(),
     scenes: z.string().array(),
   })
   .strict()
@@ -65,27 +66,28 @@ function playAct(play: Play, index: number, act: Act, rl: readline.Interface) {
 
 function confirmAct(play: Play, index: number, act: Act, rl: readline.Interface, reconfirm = false) {
   return new Promise<void>((resolve, reject) => {
-    rl.question(
-      `${
-        reconfirm ? '' : '\n'
-      }Type '${defaultConfirmationString}' or '${defaultCancellationString}' when you're done: `,
-      async (answer) => {
-        if (answer === defaultConfirmationString) {
-          return resolve()
-        } else if (answer === defaultCancellationString) {
-          return reject(new UserAbortError(play, index))
-        }
-
-        try {
-          await confirmAct(play, index, act, rl, true)
-
-          return resolve()
-        } catch {
-          return reject(new UserAbortError(play, index))
-        }
+    rl.question(getConfirmationString(play, act, reconfirm), async (answer) => {
+      if (answer === defaultConfirmationString) {
+        return resolve()
+      } else if (answer === defaultCancellationString) {
+        return reject(new UserAbortError(play, index))
       }
-    )
+
+      try {
+        await confirmAct(play, index, act, rl, true)
+
+        return resolve()
+      } catch {
+        return reject(new UserAbortError(play, index))
+      }
+    })
   })
+}
+
+function getConfirmationString(play: Play, act: Act, reconfirm: boolean) {
+  return `${reconfirm ? '' : '\n'}Type '${
+    act.confirmation ?? play.confirmation ?? defaultConfirmationString
+  }' or '${defaultCancellationString}' when you're done: `
 }
 
 export type Act = z.infer<typeof actSchema>

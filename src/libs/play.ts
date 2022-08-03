@@ -8,10 +8,12 @@ import { z } from 'zod'
 import { PLAYS_DIRECTORY, PLAY_EXTENSION } from '../constants/play'
 
 import { errorWithCause } from './error'
+import { gitValidationSchema } from './git'
 
 const metadataSchema = z.object({
   name: z.string().optional(),
   confirmation: z.string().optional(),
+  git: gitValidationSchema.optional(),
 })
 
 export async function findAllPlays(): Promise<Plays> {
@@ -125,16 +127,20 @@ async function loadPlay(playPath: string): Promise<PlayData> {
   try {
     const file = await fs.readFile(playPath, 'utf8')
     const content = parse(file)
-    const { confirmation, name } = metadataSchema.parse(content)
+    const { confirmation, git, name } = metadataSchema.parse(content)
 
     const data: PlayData = { content }
 
-    if (name) {
-      data.name = name
-    }
-
     if (confirmation) {
       data.confirmation = confirmation
+    }
+
+    if (git) {
+      data.git = git
+    }
+
+    if (name) {
+      data.name = name
     }
 
     return data
@@ -155,4 +161,4 @@ export interface Play extends PlayMetadata {
 }
 
 type PlayMetadata = z.infer<typeof metadataSchema>
-type PlayData = Pick<Play, 'content' | 'name' | 'confirmation'>
+type PlayData = Pick<Play, 'content' | 'name' | 'confirmation' | 'git'>

@@ -7,7 +7,7 @@ import * as play from '../src/constants/play'
 import { defaultConfirmationString } from '../src/libs/act'
 
 export async function withFixture(fixtureName: string, test: (testParams: TestParameters) => Promise<void>) {
-  const playsPathSpy = vi
+  const playsPathMock = vi
     .spyOn(play, 'PLAYS_DIRECTORY', 'get')
     .mockReturnValue(path.join('fixtures', fixtureName, play.PLAYS_DIRECTORY))
 
@@ -35,7 +35,7 @@ export async function withFixture(fixtureName: string, test: (testParams: TestPa
   } finally {
     rlMock.mockRestore()
     logMock.mockRestore()
-    playsPathSpy.mockRestore()
+    playsPathMock.mockRestore()
   }
 }
 

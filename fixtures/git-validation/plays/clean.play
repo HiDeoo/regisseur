@@ -1,0 +1,12 @@
+{
+  git: {
+    clean: true
+  }
+
+  acts: [
+     {
+      title: Act 1
+      scenes: []
+    }
+  ]
+}

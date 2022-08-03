@@ -1,4 +1,5 @@
-import { expect, test } from 'vitest'
+import { simpleGit } from 'simple-git'
+import { afterEach, describe, expect, test, vi } from 'vitest'
 import { ZodError } from 'zod'
 
 import { runAction } from '../src/actions'
@@ -8,7 +9,9 @@ import { findPlay } from '../src/libs/play'
 
 import { withFixture } from './utils'
 
-const getActsReadErrorRegExp = /^Could not read acts from the play file at '/
+const getActsReadErrorRegExp = /^Could not read acts from the play file at /
+
+vi.mock('simple-git')
 
 test('should error with no argument and no default', async () =>
   withFixture('multiple-plays-no-default', async () => {
@@ -286,6 +289,44 @@ test('should use multiple confirmation strings', async () =>
     expect(question).toHaveBeenNthCalledWith(2, "\nType 'yes' or 'stop' when you're done: ", expect.any(Function))
     expect(question).toHaveBeenNthCalledWith(3, "\nType 'valid' or 'stop' when you're done: ", expect.any(Function))
   }))
+
+describe('git validations', () => {
+  afterEach(() => {
+    simpleGit().mockRepo(true)
+    simpleGit().mockClean(true)
+  })
+
+  test('should error with git validation outside of a git repo', async () =>
+    withFixture('git-validation', async ({ log }) => {
+      simpleGit().mockRepo(false)
+
+      await expect(runAction('clean')).rejects.toThrowError(
+        'Cannot run this play including git validations outside of a git repository.'
+      )
+
+      expect(log).not.toHaveBeenCalled()
+    }))
+
+  test('should run a play with with git clean validation in a clean working tree', async () =>
+    withFixture('git-validation', async ({ log }) => {
+      simpleGit().mockClean(true)
+
+      await runAction('clean')
+
+      expect(log).toHaveBeenNthCalledWith(1, getPlayNameOutput('clean.play'))
+    }))
+
+  test('should error with git clean validation in an uncleaned working tree', async () =>
+    withFixture('git-validation', async ({ log }) => {
+      simpleGit().mockClean(false)
+
+      await expect(runAction('clean')).rejects.toThrowError(
+        'The working tree is not clean. Clean it before running this play.'
+      )
+
+      expect(log).not.toHaveBeenCalled()
+    }))
+})
 
 function getPlayNameOutput(fileNameOrName: string) {
   return `Starting play '${fileNameOrName}'.`

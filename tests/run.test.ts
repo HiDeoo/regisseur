@@ -205,6 +205,15 @@ test('should run and stop at a specific act', async () =>
     expect(log).toHaveBeenNthCalledWith(9, getSceneOutput('Do the thing 2.3'))
   }))
 
+test('should ask for a confirmation token until it is valid', async () =>
+  withFixture('multiple-plays-no-default', async ({ mockAnswers, question }) => {
+    mockAnswers(['test', 'hello', 'world', 'done', 'help', 'stop'])
+
+    await expect(runAction('multiple-acts')).rejects.toThrowError(UserAbortError)
+
+    expect(question).toHaveBeenCalledTimes(6)
+  }))
+
 test('should error when trying to continue from an invalid act', async () =>
   withFixture('multiple-plays-no-default', async () => {
     let invalidActNumber = 15

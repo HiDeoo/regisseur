@@ -18,7 +18,7 @@ const contentSchema = z.object({
 })
 
 export const defaultConfirmationString = 'done'
-export const defaultCancellationString = 'stop'
+const defaultCancellationString = 'stop'
 
 export function getActs(play: Play): Act[] {
   try {

@@ -31,14 +31,14 @@ test('should log a validation error', async () => {
 
     schema.parse({ title: 1, count: 'a' })
   } catch (error) {
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => undefined)
 
     if (error instanceof ZodError) {
       logValidationError(error)
     }
 
-    expect(consoleErrorSpy).toHaveBeenCalledOnce()
-    expect(consoleErrorSpy.mock.lastCall).toMatchInlineSnapshot(`
+    expect(consoleErrorMock).toHaveBeenCalledOnce()
+    expect(consoleErrorMock.mock.lastCall).toMatchInlineSnapshot(`
       [
         "Validation error:",
         "
@@ -47,6 +47,6 @@ test('should log a validation error', async () => {
       ]
     `)
 
-    consoleErrorSpy.mockRestore()
+    consoleErrorMock.mockRestore()
   }
 })

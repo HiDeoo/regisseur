@@ -16,6 +16,7 @@
     "cac": "6.7.12",
     "hjson": "3.2.2",
     "kolorist": "1.5.1",
+    "simple-git": "3.11.0",
     "tiny-glob": "0.2.9",
     "zod-error": "1.0.3"
   },

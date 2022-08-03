@@ -4,11 +4,17 @@ import { bold, cyan, dim, green, red } from 'kolorist'
 
 import { PLAYS_DIRECTORY } from './constants/play'
 import { getActs, playActs } from './libs/act'
+import { runGitValidations } from './libs/git'
 import { findPlay, findAllPlays } from './libs/play'
 import { pluralize } from './libs/string'
 
 export async function runAction(pathOrFileNameOrName: string | undefined, options: RunOptions = {}) {
   const play = await findPlay(pathOrFileNameOrName)
+
+  if (play.git) {
+    await runGitValidations(play.git)
+  }
+
   const acts = getActs(play)
 
   const nameOrFileName = play.name ?? play.fileName

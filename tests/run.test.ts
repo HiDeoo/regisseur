@@ -292,8 +292,7 @@ test('should use multiple confirmation strings', async () =>
 
 describe('git validations', () => {
   afterEach(() => {
-    simpleGit().mockRepo(true)
-    simpleGit().mockClean(true)
+    simpleGit().resetMocks()
   })
 
   test('should error with git validation outside of a git repo', async () =>
@@ -322,6 +321,26 @@ describe('git validations', () => {
 
       await expect(runAction('clean')).rejects.toThrowError(
         'The working tree is not clean. Clean it before running this play.'
+      )
+
+      expect(log).not.toHaveBeenCalled()
+    }))
+
+  test('should run a play with with git branch validation in a valid branch', async () =>
+    withFixture('git-validation', async ({ log }) => {
+      simpleGit().mockBranch('test')
+
+      await runAction('branch')
+
+      expect(log).toHaveBeenNthCalledWith(1, getPlayNameOutput('branch.play'))
+    }))
+
+  test('should error with with git branch validation in an invalid branch', async () =>
+    withFixture('git-validation', async ({ log }) => {
+      simpleGit().mockBranch('dev')
+
+      await expect(runAction('branch')).rejects.toThrowError(
+        "This play should only be run on the 'test' branch. Switch before running this play."
       )
 
       expect(log).not.toHaveBeenCalled()

@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { errorWithCause } from './error'
 
 export const gitValidationSchema = z.object({
+  branch: z.string().optional(),
   clean: z.boolean().optional(),
 })
 
@@ -16,6 +17,10 @@ export async function runGitValidations(validation: GitValidation) {
 
   if (validation.clean) {
     await runCleanValidation()
+  }
+
+  if (validation.branch) {
+    await runBranchValidation(validation.branch)
   }
 }
 
@@ -36,6 +41,14 @@ async function runCleanValidation() {
 
   if (!status.isClean()) {
     throw new Error('The working tree is not clean. Clean it before running this play.')
+  }
+}
+
+async function runBranchValidation(branch: GitValidation['branch']) {
+  const status = await getStatus()
+
+  if (status.current !== branch) {
+    throw new Error(`This play should only be run on the '${branch}' branch. Switch before running this play.`)
   }
 }
 

@@ -261,6 +261,32 @@ test.each([1, 2, 3])('should continue from the act #%d', async (startAt) =>
   })
 )
 
+test('should use the default confirmation string', async () =>
+  withFixture('multiple-plays-no-default', async ({ question }) => {
+    await runAction('single-act')
+
+    expect(question).toHaveBeenCalledTimes(1)
+    expect(question).toHaveBeenCalledWith("\nType 'done' or 'stop' when you're done: ", expect.any(Function))
+  }))
+
+test('should use a custom confirmation string', async () =>
+  withFixture('multiple-plays-no-default', async ({ question }) => {
+    await runAction('single-act-confirmation')
+
+    expect(question).toHaveBeenCalledTimes(1)
+    expect(question).toHaveBeenCalledWith("\nType 'yes' or 'stop' when you're done: ", expect.any(Function))
+  }))
+
+test('should use multiple confirmation strings', async () =>
+  withFixture('multiple-plays-no-default', async ({ question }) => {
+    await runAction('multiple-acts-confirmations')
+
+    expect(question).toHaveBeenCalledTimes(3)
+    expect(question).toHaveBeenNthCalledWith(1, "\nType 'ok' or 'stop' when you're done: ", expect.any(Function))
+    expect(question).toHaveBeenNthCalledWith(2, "\nType 'yes' or 'stop' when you're done: ", expect.any(Function))
+    expect(question).toHaveBeenNthCalledWith(3, "\nType 'valid' or 'stop' when you're done: ", expect.any(Function))
+  }))
+
 function getPlayNameOutput(fileNameOrName: string) {
   return `Starting play '${fileNameOrName}'.`
 }

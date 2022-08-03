@@ -1,0 +1,14 @@
+{
+  confirmation: yes
+
+  acts: [
+    {
+      title: Act 1
+      scenes: [
+        Do the thing 1
+        Do the thing 2
+        Do the thing 3
+      ]
+    }
+  ]
+}

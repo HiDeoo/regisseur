@@ -63,14 +63,16 @@ test('should not identify a default with multiple plays and no explicit default'
   withFixture('multiple-plays-no-default', async ({ log }) => {
     await listAction()
 
-    expect(log).toHaveBeenCalledTimes(7)
-    expect(log).toHaveBeenNthCalledWith(1, getCountOutput(6))
+    expect(log).toHaveBeenCalledTimes(9)
+    expect(log).toHaveBeenNthCalledWith(1, getCountOutput(8))
     expect(log).toHaveBeenNthCalledWith(2, getPlayOutput('act-with-no-scenes', false))
     expect(log).toHaveBeenNthCalledWith(3, getPlayOutput('act-with-no-title', false))
-    expect(log).toHaveBeenNthCalledWith(4, getPlayOutput('multiple-acts', false, 'Multiple Acts'))
-    expect(log).toHaveBeenNthCalledWith(5, getPlayOutput('no-acts-property', false))
-    expect(log).toHaveBeenNthCalledWith(6, getPlayOutput('no-acts', false))
-    expect(log).toHaveBeenNthCalledWith(7, getPlayOutput('single-act', false, 'multiple-acts'))
+    expect(log).toHaveBeenNthCalledWith(4, getPlayOutput('multiple-acts-confirmations', false))
+    expect(log).toHaveBeenNthCalledWith(5, getPlayOutput('multiple-acts', false, 'Multiple Acts'))
+    expect(log).toHaveBeenNthCalledWith(6, getPlayOutput('no-acts-property', false))
+    expect(log).toHaveBeenNthCalledWith(7, getPlayOutput('no-acts', false))
+    expect(log).toHaveBeenNthCalledWith(8, getPlayOutput('single-act-confirmation', false))
+    expect(log).toHaveBeenNthCalledWith(9, getPlayOutput('single-act', false, 'multiple-acts'))
 
     const { def } = await findAllPlays()
 

@@ -11,6 +11,7 @@ import { errorWithCause } from './error'
 
 const metadataSchema = z.object({
   name: z.string().optional(),
+  confirmation: z.string().optional(),
 })
 
 export async function findAllPlays(): Promise<Plays> {
@@ -124,12 +125,16 @@ async function loadPlay(playPath: string): Promise<PlayData> {
   try {
     const file = await fs.readFile(playPath, 'utf8')
     const content = parse(file)
-    const { name } = metadataSchema.parse(content)
+    const { confirmation, name } = metadataSchema.parse(content)
 
     const data: PlayData = { content }
 
     if (name) {
       data.name = name
+    }
+
+    if (confirmation) {
+      data.confirmation = confirmation
     }
 
     return data
@@ -150,4 +155,4 @@ export interface Play extends PlayMetadata {
 }
 
 type PlayMetadata = z.infer<typeof metadataSchema>
-type PlayData = Pick<Play, 'content' | 'name'>
+type PlayData = Pick<Play, 'content' | 'name' | 'confirmation'>

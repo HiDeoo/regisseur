@@ -205,6 +205,53 @@ test('should run and stop at a specific act', async () =>
     expect(log).toHaveBeenNthCalledWith(9, getSceneOutput('Do the thing 2.3'))
   }))
 
+test('should error when trying to continue from an invalid act', async () =>
+  withFixture('multiple-plays-no-default', async () => {
+    let invalidActNumber = 15
+
+    await expect(runAction('multiple-acts', { continue: invalidActNumber })).rejects.toThrowError(
+      `The act number '${invalidActNumber}' is not valid.`
+    )
+
+    invalidActNumber = 0
+
+    await expect(runAction('multiple-acts', { continue: invalidActNumber })).rejects.toThrowError(
+      `The act number '${invalidActNumber}' is not valid.`
+    )
+  }))
+
+test.each([1, 2, 3])('should continue from the act #%d', async (startAt) =>
+  withFixture('multiple-plays-no-default', async ({ log, question }) => {
+    await runAction('multiple-acts', { continue: startAt })
+
+    expect(question).toHaveBeenCalledTimes(3 - startAt + 1)
+
+    expect(log).toHaveBeenCalledTimes(13 - (startAt * 4 - 4))
+    expect(log).toHaveBeenCalledWith(getPlayNameOutput('Multiple Acts'))
+
+    if (startAt === 1) {
+      expect(log).toHaveBeenCalledWith(getActOutput(1, 'Act 1'))
+      expect(log).toHaveBeenCalledWith(getSceneOutput('Do the thing 1.1'))
+      expect(log).toHaveBeenCalledWith(getSceneOutput('Do the thing 1.2'))
+      expect(log).toHaveBeenCalledWith(getSceneOutput('Do the thing 1.3'))
+    }
+
+    if (startAt === 2) {
+      expect(log).toHaveBeenCalledWith(getActOutput(2, 'Act 2'))
+      expect(log).toHaveBeenCalledWith(getSceneOutput('Do the thing 2.1'))
+      expect(log).toHaveBeenCalledWith(getSceneOutput('Do the thing 2.2'))
+      expect(log).toHaveBeenCalledWith(getSceneOutput('Do the thing 2.3'))
+    }
+
+    if (startAt === 3) {
+      expect(log).toHaveBeenCalledWith(getActOutput(3, 'Act 3'))
+      expect(log).toHaveBeenCalledWith(getSceneOutput('Do the thing 3.1'))
+      expect(log).toHaveBeenCalledWith(getSceneOutput('Do the thing 3.2'))
+      expect(log).toHaveBeenCalledWith(getSceneOutput('Do the thing 3.3'))
+    }
+  })
+)
+
 function getPlayNameOutput(fileNameOrName: string) {
   return `Starting play '${fileNameOrName}'.`
 }

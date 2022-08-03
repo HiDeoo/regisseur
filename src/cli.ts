@@ -10,7 +10,7 @@ const cli = cac('regisseur')
 cli.help()
 
 // FIXME(HiDeoo)
-cli.command('[play]', '// TODO').action(runAction)
+cli.command('[play]', '// TODO').option('-c, --continue <act_number>', '// TODO').action(runAction)
 cli.command('list', '// TODO').action(listAction)
 
 async function run() {
@@ -20,6 +20,8 @@ async function run() {
     await cli.runMatchedCommand()
   } catch (error) {
     if (error instanceof UserAbortError) {
+      console.log(error.toString())
+
       process.exit(1)
     }
 

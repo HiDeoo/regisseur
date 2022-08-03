@@ -30,7 +30,7 @@ export function getActs(play: Play): Act[] {
   }
 }
 
-export async function playActs(acts: Act[]) {
+export async function playActs(play: Play, acts: Act[], startAt: number) {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -42,24 +42,28 @@ export async function playActs(acts: Act[]) {
 
   try {
     for (const [index, act] of acts.entries()) {
-      await playAct(index, act, rl)
+      if (index < startAt) {
+        continue
+      }
+
+      await playAct(play, index, act, rl)
     }
   } finally {
     rl.close()
   }
 }
 
-function playAct(index: number, act: Act, rl: readline.Interface) {
+function playAct(play: Play, index: number, act: Act, rl: readline.Interface) {
   console.log(`\n${dim(`#${index + 1}`)} ${bold(act.title)}`)
 
   for (const scene of act.scenes) {
     console.log(` ${dim('-')} ${scene}`)
   }
 
-  return confirmAct(index, act, rl)
+  return confirmAct(play, index, act, rl)
 }
 
-function confirmAct(index: number, act: Act, rl: readline.Interface, reconfirm = false) {
+function confirmAct(play: Play, index: number, act: Act, rl: readline.Interface, reconfirm = false) {
   return new Promise<void>((resolve, reject) => {
     rl.question(
       `${
@@ -69,15 +73,15 @@ function confirmAct(index: number, act: Act, rl: readline.Interface, reconfirm =
         if (answer === defaultConfirmationString) {
           return resolve()
         } else if (answer === defaultCancellationString) {
-          return reject(new UserAbortError())
+          return reject(new UserAbortError(play, index))
         }
 
         try {
-          await confirmAct(index, act, rl, true)
+          await confirmAct(play, index, act, rl, true)
 
           return resolve()
         } catch {
-          return reject(new UserAbortError())
+          return reject(new UserAbortError(play, index))
         }
       }
     )

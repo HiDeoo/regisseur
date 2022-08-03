@@ -7,7 +7,7 @@ import { getActs, playActs } from './libs/act'
 import { findPlay, findAllPlays } from './libs/play'
 import { pluralize } from './libs/string'
 
-export async function runAction(pathOrFileNameOrName: string | undefined) {
+export async function runAction(pathOrFileNameOrName: string | undefined, options: RunOptions = {}) {
   const play = await findPlay(pathOrFileNameOrName)
   const acts = getActs(play)
 
@@ -17,9 +17,13 @@ export async function runAction(pathOrFileNameOrName: string | undefined) {
     throw new Error(`No acts found in the '${nameOrFileName}' play.`)
   }
 
+  if (typeof options.continue === 'number' && !acts[options.continue - 1]) {
+    throw new Error(`The act number '${options.continue}' is not valid.`)
+  }
+
   console.log(cyan(`Starting play '${nameOrFileName}'.`))
 
-  await playActs(acts)
+  await playActs(play, acts, typeof options.continue === 'number' ? options.continue - 1 : 0)
 }
 
 export async function listAction() {
@@ -43,4 +47,8 @@ export async function listAction() {
       }`
     )
   }
+}
+
+interface RunOptions {
+  continue?: number // The act number starts at 1.
 }

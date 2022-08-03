@@ -21,9 +21,7 @@ export async function withFixture(fixtureName: string, test: (testParams: TestPa
   }
 
   const questionMock = vi.fn().mockImplementation((_query: string, callback: (answer: string) => void) => {
-    callback((answers ? answers[questionCount] : undefined) ?? defaultConfirmationString)
-
-    questionCount++
+    callback((answers ? answers[questionCount++] : undefined) ?? defaultConfirmationString)
   })
 
   const rlMock = vi.spyOn(readline, 'createInterface').mockReturnValue({

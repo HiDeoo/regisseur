@@ -1,6 +1,6 @@
 import path from 'node:path'
 
-import { bold, cyan, dim, red } from 'kolorist'
+import { bold, cyan, dim, green, red } from 'kolorist'
 
 import { PLAYS_DIRECTORY } from './constants/play'
 import { getActs, playActs } from './libs/act'
@@ -47,6 +47,13 @@ export async function listAction() {
       }`
     )
   }
+}
+
+export async function validateAction(pathOrFileNameOrName: string | undefined) {
+  const play = await findPlay(pathOrFileNameOrName)
+  getActs(play)
+
+  console.log(`The play '${play.name ?? play.fileName}' is ${green('valid')}.`)
 }
 
 interface RunOptions {

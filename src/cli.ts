@@ -9,10 +9,12 @@ const cli = cac('regisseur')
 
 cli.help()
 
-// FIXME(HiDeoo)
-cli.command('[play]', '// TODO').option('-c, --continue <act_number>', '// TODO').action(runAction)
-cli.command('list', '// TODO').action(listAction)
-cli.command('validate [play]', '// TODO').action(validateAction)
+cli
+  .command('[play]', 'Run the default or specified play')
+  .option('-c, --continue <act_number>', 'Run the play from the specified act number')
+  .action(runAction)
+cli.command('list', 'List all plays in the project').action(listAction)
+cli.command('validate [play]', 'Validate the default or specified play').action(validateAction)
 
 async function run() {
   try {

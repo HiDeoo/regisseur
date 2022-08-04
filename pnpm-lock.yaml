@@ -28,6 +28,7 @@ dependencies:
   kolorist: 1.5.1
   simple-git: 3.11.0
   tiny-glob: 0.2.9
+  zod: 3.17.10
   zod-error: 1.0.3
 
 devDependencies:
@@ -44,7 +45,6 @@ devDependencies:
   typescript: 4.7.4
   unbuild: 0.7.6
   vitest: 0.19.1_c8@7.12.0
-  zod: 3.17.10
 
 packages:
 
@@ -3707,3 +3707,4 @@ packages:
 
   /zod/3.17.10:
     resolution: {integrity: sha512-IHXnQYQuOOOL/XgHhgl8YjNxBHi3xX0mVcHmqsvJgcxKkEczPshoWdxqyFwsARpf41E0v9U95WUROqsHHxt0UQ==}
+    dev: false

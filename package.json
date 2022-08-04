@@ -2,7 +2,7 @@
   "name": "regisseur",
   "description": "CLI utility to help running manual workflows by prompting the user for a confirmation at each step.",
   "homepage": "https://github.com/HiDeoo/regisseur",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "author": "HiDeoo",
   "license": "MIT",
   "bin": "./cli.mjs",
